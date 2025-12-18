@@ -89,8 +89,12 @@ data-warehouse-project/
 
 
 
-## 🛡️ License
-This project is licensed under the MIT License. You are free to use, modify, and share this project with proper attribution.
 ```
 ## Stay Connected
 Feel free to contact me on Linkedin https://www.linkedin.com/in/brendon-mbizvo/
+
+## 🛡️License
+This project is licensed under the <u>MIT License</u>. Feel free to use, modify, and share the project with proper attribution.
+
+## About Me
+Hi there! I'm Brendon Mbizvo. I'm a Data Scientist passionate about transforming raw data into actionable insights. 
