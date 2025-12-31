@@ -142,19 +142,22 @@ BEGIN
 				ELSE CAST(CAST(sls_ship_dt AS NVARCHAR) AS DATE) 
 			END AS sls_ship_dt,
 			CASE 
-				WHEN LEN(sls_due_dt) != 8 OR sls_due_dt = 0 THEN NULL
-				ELSE CAST(CAST(sls_due_dt AS NVARCHAR) AS DATE) 
+				WHEN sls_due_dt = 0 OR LEN(sls_due_dt) != 8 THEN NULL
+				ELSE CAST(CAST(sls_due_dt AS VARCHAR) AS DATE)
 			END AS sls_due_dt,
+			CASE 
+				WHEN sls_sales IS NULL OR sls_sales <= 0 OR sls_sales != sls_quantity * ABS(sls_price) 
+					THEN sls_quantity * ABS(sls_price)
+				ELSE sls_sales
+			END AS sls_sales_test, -- Recalculate sales if original value is missing or incorrect
 			sls_quantity,
 			CASE 
-				WHEN sls_sales IS NULL OR sls_sales <= 0 OR sls_sales != sls_quantity * ABS(sls_price) THEN sls_quantity * ABS(sls_price)
-				ELSE sls_sales
-			END AS sls_sales_test,
-
-			CASE WHEN sls_price IS NULL OR sls_price <= 0 THEN sls_sales/NULLIF(sls_quantity,0)
-				 ELSE ABS(sls_price)
+				WHEN sls_price IS NULL OR sls_price <= 0 
+					THEN sls_sales / NULLIF(sls_quantity, 0)
+				ELSE sls_price  -- Derive price if original value is invalid
 			END AS sls_price_test
 		FROM bronze.crm_sales_details
+
 
 		SET @end_time = GETDATE()
 		PRINT 'Inserting data into silver.crm_sales_details table duration:' + CAST(DATEDIFF(second,@start_time, @end_time) AS NVARCHAR) + ' Seconds';
